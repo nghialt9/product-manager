@@ -1,0 +1,74 @@
+﻿@page
+@using ManageSellProduct.Business
+@using ManageSellProduct.Enum;
+@using ManageSellProduct.Helpers;
+@using ManageSellProduct.Models;
+@{
+    ViewData[CommonEnum.Title] = "SellInvoice page";
+    SellInvoice[] sellInvoices = SellInvoiceBusiness.GetSellInvoices();
+
+    if (Request.Method == CommonEnum.Post)
+    {
+        string key = Request.Form[CommonEnum.Key];
+        if(string.IsNullOrWhiteSpace(key) == false)
+        {
+            key = key.ToLower();
+            SellInvoice[] existSellInvoices = sellInvoices;
+            sellInvoices = new SellInvoice[0];
+
+            for (int i = 0; i < existSellInvoices.Length; i++)
+            {
+                if (existSellInvoices[i].Code.ToLower().Contains(key) ||
+                    CommonFunction.DateToString(existSellInvoices[i].InvoiceDate, CommonEnum.DateDisplay).Contains(key) ||
+                    existSellInvoices[i].TotalPrice.ToString().Contains(key))
+                {
+                    sellInvoices = CommonFunction.ArrayAddItem(sellInvoices, existSellInvoices[i]);
+                }
+            }
+        }
+    }
+}
+
+<div class="text-center">
+    <div class="form-container">
+        <form method="post">
+            <div class="form-group">
+                <label>Tu Khoa</label>
+                <input type="text" name="Key" value="">
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Tim">
+                <a href="SellInvoiceDetail" class="link-add">Them</a>
+            </div>
+        </form>
+    </div>
+
+    @if (sellInvoices.Length > 0)
+    {
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Ma Hoa Don Ban</th>
+                    <th>Ngay Tao</th>
+                    <th>Tong Tien</th>
+                    <th>Thao tac</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (SellInvoice sellInvoice in sellInvoices)
+                {
+                    <tr>
+                        <td>@sellInvoice.Code</td>
+                        <td>@CommonFunction.DateToString(sellInvoice.InvoiceDate, CommonEnum.DateDisplay)</td>
+                        <td>@CommonFunction.FormatAsVietnameseCurrency(sellInvoice.TotalPrice)</td>
+                        <td>
+                            <a href="SellInvoiceDetail?code=@sellInvoice.Code&action=edit">Sua</a>
+                            <a href="SellInvoiceDetail?code=@sellInvoice.Code&action=delete">Xoa</a>
+                            <a href="SellInvoiceDetail?code=@sellInvoice.Code&action=detail">Chi tiet</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

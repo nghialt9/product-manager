@@ -1,0 +1,124 @@
+﻿@page
+@using ManageSellProduct.Business
+@using ManageSellProduct.Enum;
+@using ManageSellProduct.Helpers;
+@using ManageSellProduct.Models;
+@using ManageSellProduct.Providers;
+
+@{
+    string noti = string.Empty;
+    string code = Request.Query["code"];
+    string action = Request.Query["action"];
+    Category category = new Category();
+
+    if (string.IsNullOrWhiteSpace(code) == false)
+    {
+        category = CategoryProvider.GetCategory(code);
+
+        if (string.IsNullOrWhiteSpace(category.Code))
+        {
+            noti = "Loai khong ton tai";
+        }
+        else
+        {
+            if (Request.Method == CommonEnum.Post)
+            {
+                if (action.ToLower() == CommonEnum.Delete)
+                {
+                    noti = string.Format(CategoryBusiness.DeleteCategory(code), category.Name);
+                    goto End;
+                }
+
+                string name = Request.Form["Name"];
+
+                if (action.ToLower() == CommonEnum.Edit)
+                {
+                    Category editCategory = category;
+                    editCategory.Name = name;
+                    noti = CategoryBusiness.EditCategory(editCategory);
+                }
+
+                End:
+                if (noti == CommonEnum.Success)
+                {
+                    Response.Redirect("Category");
+                }
+            }
+        }
+    }
+    else
+    {
+        if (Request.Method == CommonEnum.Post)
+        {
+            string fCode = Request.Form["Code"];
+            string name = Request.Form["Name"];
+
+            Category addCategory = new Category();
+            addCategory.Code = fCode;
+            addCategory.Name = name;
+
+            noti = string.Format(CategoryBusiness.AddCategory(addCategory), addCategory.Code);
+
+            if (noti == CommonEnum.Success)
+            {
+                Response.Redirect("Category");
+            }
+        }
+    }
+}
+
+<div>
+    @if (string.IsNullOrWhiteSpace(category.Code) == false && action.ToLower() == CommonEnum.Edit)
+    {
+        <div class="form-container">
+            <form method="post">
+                <div class="form-group">
+                    <label>Ma Loai</label>
+                    <input type="text" disabled name="Code" value="@category.Code">
+                </div>
+
+                <div class="form-group">
+                    <label>Ten Loai</label>
+                    <input type="text" name="Name" value="@category.Name">
+                </div>
+
+                <input type="submit" value="Luu">
+            </form>
+        </div>
+    }
+
+    @if (string.IsNullOrWhiteSpace(code))
+    {
+        <div class="form-container">
+            <form class="form-container" method="post">
+                <div class="form-group">
+                    <label>Ma Loai</label>
+                    <input type="text" name="Code" value="">
+                </div>
+
+                <div class="form-group">
+                    <label>Ten Loai</label>
+                    <input type="text" name="Name" value="">
+                </div>
+
+                <input type="submit" value="Luu">
+            </form>
+        </div>
+    }
+
+    @if (string.IsNullOrWhiteSpace(category.Code) == false && action.ToLower() == CommonEnum.Delete)
+    {
+        <div class="form-container">
+            <div>Ban co muon xoa san pham @category.Name khong?</div>
+            <br>
+            <form class="form-container" method="post">
+                <input type="submit" value="Xoa">
+            </form>
+        </div>
+    }
+
+    @if (noti != CommonEnum.Success)
+    {
+        <div class="noti">@noti</div>
+    }
+</div>

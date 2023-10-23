@@ -1,0 +1,84 @@
+﻿@page
+@using ManageSellProduct.Business
+@using ManageSellProduct.Enum;
+@using ManageSellProduct.Helpers;
+@using ManageSellProduct.Models;
+@{
+    ViewData[CommonEnum.Title] = "Product page";
+    Product[] products = ProductBusiness.GetProducts();
+
+    if (Request.Method == CommonEnum.Post)
+    {
+        string key = Request.Form[CommonEnum.Key];
+        if(string.IsNullOrWhiteSpace(key) == false)
+        {
+            key = key.ToLower();
+            Product[] existProducts = products;
+            products = new Product[0];
+
+            for (int i = 0; i < existProducts.Length; i++)
+            {
+                if (existProducts[i].Code.ToLower().Contains(key) ||
+                    existProducts[i].Name.ToLower().Contains(key) ||
+                    existProducts[i].Manufacturer.ToLower().Contains(key))
+                {
+                    products = CommonFunction.ArrayAddItem(products, existProducts[i]);
+                }
+            }
+        }
+    }
+}
+
+<div class="text-center">
+    <div class="form-container">
+        <form method="post">
+            <div class="form-group">
+                <label>Tu Khoa</label>
+                <input type="text" name="Key" value="">
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Tim">
+                <a href="IndexDetail" class="link-add">Them</a>
+            </div>
+        </form>
+    </div>
+    @if (products.Length > 0)
+    {
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Ma SP</th>
+                    <th>Ten SP</th>
+                    <th>So ngay dung</th>
+                    <th>Ngay het han</th>
+                    <th>Cty san xuat</th>
+                    <th>Ngay san xuat</th>
+                    <th>Loai</th>
+                    <th>Gia</th>
+                    <th>So Luong</th>
+                    <th>Thao tac</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Product product in products)
+                {
+                    <tr>
+                        <td>@product.Code</td>
+                        <td>@product.Name</td>
+                        <td>@product.NumberDaysUse</td>
+                        <td>@CommonFunction.DateToString(product.ExpiryDate, CommonEnum.DateDisplay)</td>
+                        <td>@product.Manufacturer</td>
+                        <td>@CommonFunction.DateToString(product.ManufactureDate, CommonEnum.DateDisplay)</td>
+                        <td>@product.CategoryName</td>
+                        <td>@CommonFunction.FormatAsVietnameseCurrency(product.Price)</td>
+                        <td>@CommonFunction.FormatNumber(product.Quantity)</td>
+                        <td>
+                            <a href="IndexDetail?code=@product.Code&action=edit">Sua</a>
+                            <a href="IndexDetail?code=@product.Code&action=delete">Xoa</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

@@ -1,0 +1,202 @@
+﻿@page
+@using ManageSellProduct.Business
+@using ManageSellProduct.Enum;
+@using ManageSellProduct.Helpers;
+@using ManageSellProduct.Models;
+@using ManageSellProduct.Providers;
+
+@{
+    string noti = string.Empty;
+    string code = Request.Query["code"];
+    string action = Request.Query["action"];
+    Product product = new Product();
+    Category[] categorys = new Category[0];
+
+    if (string.IsNullOrWhiteSpace(code) == false)
+    {
+        product = ProductBusiness.GetProductByCode(code);
+
+        if (string.IsNullOrWhiteSpace(product.Code))
+        {
+            noti = "San pham khong ton tai";
+        }
+        else
+        {
+            if (Request.Method == CommonEnum.Post)
+            {
+                if (action.ToLower() == CommonEnum.Delete)
+                {
+                    noti = ProductBusiness.DeleteProduct(code);
+                    goto End;
+                }
+
+                string name = Request.Form["Name"];
+                int numberDaysUse = CommonFunction.StringToInt(Request.Form["NumberDaysUse"]);
+                decimal price = CommonFunction.StringToDecimal(Request.Form["Price"]);
+                int quantity = CommonFunction.StringToInt(Request.Form["Quantity"]);
+
+                if (action.ToLower() == CommonEnum.Edit)
+                {
+                    Product editProduct = product;
+                    editProduct.Name = name;
+                    editProduct.NumberDaysUse = numberDaysUse;
+                    editProduct.Price = price;
+                    editProduct.Quantity = quantity;
+
+                    noti = ProductBusiness.EditProduct(editProduct);  
+                }
+
+                End:
+                if (noti == CommonEnum.Success)
+                {
+                    Response.Redirect("Index");
+                }
+
+            }
+        }
+    }
+    else
+    {
+        categorys = CategoryProvider.GetCategorys();
+        if (categorys.Length == 0)
+        {
+            noti = "Vui long nhap Loai hang truoc";
+        }
+
+        
+        if (Request.Method == CommonEnum.Post)
+        {
+            string fCode = Request.Form["Code"];
+            string name = Request.Form["Name"];
+            int numberDaysUse = CommonFunction.StringToInt(Request.Form["NumberDaysUse"]);
+            string manufacturer = Request.Form["Manufacturer"];
+            DateTime manufactureDate = CommonFunction.StringToDate(Request.Form["ManufactureDate"], CommonEnum.DateDisplay);
+            string categoryCode = Request.Form["CategoryCode"];
+            decimal price = CommonFunction.StringToDecimal(Request.Form["Price"]);
+            int quantity = CommonFunction.StringToInt(Request.Form["Quantity"]);
+
+            Product addProduct = new Product();
+            addProduct.Code = fCode;
+            addProduct.Name = name;
+            addProduct.NumberDaysUse = numberDaysUse;
+            addProduct.Manufacturer = manufacturer;
+            addProduct.ManufactureDate = manufactureDate;
+            addProduct.CategoryCode = categoryCode;
+            addProduct.Price = price;
+            addProduct.Quantity = quantity;
+
+            noti = string.Format(ProductBusiness.AddProduct(addProduct), addProduct.Code);
+
+            if (noti == CommonEnum.Success)
+            {
+                Response.Redirect("Index");
+            }
+        }
+    }
+}
+
+<div>
+    @if (string.IsNullOrWhiteSpace(product.Code) == false && action.ToLower() == CommonEnum.Edit)
+    {
+        <div class="form-container">
+            <form method="post">
+                <div class="form-group">
+                    <label>Ma San Pham</label>
+                    <input type="text" disabled name="Code" value="@product.Code">
+                </div>
+
+                <div class="form-group">
+                    <label>Ten San Pham</label>
+                    <input type="text" name="Name" value="@product.Name">
+                </div>
+
+                <div class="form-group">
+                    <label>So ngay dung</label>
+                    <input type="number" name="NumberDaysUse" value="@product.NumberDaysUse">
+                </div>
+
+                <div class="form-group">
+                    <label>Gia</label>
+                    <input type="number" name="Price" value="@product.Price">
+                </div>
+
+                <div class="form-group">
+                    <label>So luong</label>
+                    <input type="number" name="Quantity" value="@product.Quantity">
+                </div>
+
+                <input type="submit" value="Luu">
+            </form>
+        </div>
+    }
+
+    @if (string.IsNullOrWhiteSpace(code) && categorys.Length > 0)
+    {
+        <div class="form-container">
+            <form class="form-container" method="post">
+                <div class="form-group">
+                    <label>Ma San Pham</label>
+                    <input type="text" name="Code" value="">
+                </div>
+
+                <div class="form-group">
+                    <label>Ten San Pham</label>
+                    <input type="text" name="Name" value="">
+                </div>
+
+                <div class="form-group">
+                    <label>So ngay dung</label>
+                    <input type="number" name="NumberDaysUse" value="">
+                </div>
+
+                <div class="form-group">
+                    <label>Cty San Xuat</label>
+                    <input type="text" name="Manufacturer" value="">
+                </div>
+
+                <div class="form-group">
+                    <label>Ngay San Xuat</label>
+                    <input type="date" name="ManufactureDate" value="@CommonFunction.DateToString(DateTime.Now, CommonEnum.DateDisplay)">
+                </div>
+
+                <div class="form-group">
+                    <label>Loai</label>
+                    <select id="staticSelect" name="CategoryCode">
+                        @foreach(Category category in categorys)
+                        {
+                            <option value="@category.Code">@category.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Gia</label>
+                    <input type="number" name="Price" value="">
+                </div>
+
+                <div class="form-group">
+                    <label>So luong</label>
+                    <input type="number" name="Quantity" value="">
+                </div>
+
+                <input type="submit" value="Luu">
+            </form>
+        </div>
+    }
+
+    @if (string.IsNullOrWhiteSpace(product.Code) == false && action.ToLower() == CommonEnum.Delete)
+    {
+        <div class="form-container">
+            <div>Ban co muon xoa san pham @product.Name khong?</div>
+            <br>
+            <form class="form-container" method="post">
+                <input type="submit" value="Xoa">
+            </form>
+        </div>
+    }
+
+    @if (noti != CommonEnum.Success)
+    {
+        <div class="noti">@noti</div>
+    }
+</div>

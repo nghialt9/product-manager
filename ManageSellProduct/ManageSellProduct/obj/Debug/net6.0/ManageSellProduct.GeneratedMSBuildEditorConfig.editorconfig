@@ -1,0 +1,61 @@
+is_global = true
+build_property.TargetFramework = net6.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = ManageSellProduct
+build_property.RootNamespace = ManageSellProduct
+build_property.ProjectDir = D:\KHTN\Ky thuat lap trinh\Do an\ManageSellProduct\ManageSellProduct\
+build_property.RazorLangVersion = 6.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = D:\KHTN\Ky thuat lap trinh\Do an\ManageSellProduct\ManageSellProduct
+build_property._RazorSourceGeneratorDebug = 
+
+[D:/KHTN/Ky thuat lap trinh/Do an/ManageSellProduct/ManageSellProduct/Pages/Category.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2F0ZWdvcnkuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/KHTN/Ky thuat lap trinh/Do an/ManageSellProduct/ManageSellProduct/Pages/CategoryDetail.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2F0ZWdvcnlEZXRhaWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/KHTN/Ky thuat lap trinh/Do an/ManageSellProduct/ManageSellProduct/Pages/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXJyb3IuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/KHTN/Ky thuat lap trinh/Do an/ManageSellProduct/ManageSellProduct/Pages/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/KHTN/Ky thuat lap trinh/Do an/ManageSellProduct/ManageSellProduct/Pages/IndexDetail.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXhEZXRhaWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/KHTN/Ky thuat lap trinh/Do an/ManageSellProduct/ManageSellProduct/Pages/SellInvoice.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2VsbEludm9pY2UuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/KHTN/Ky thuat lap trinh/Do an/ManageSellProduct/ManageSellProduct/Pages/SellInvoiceDetail.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2VsbEludm9pY2VEZXRhaWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/KHTN/Ky thuat lap trinh/Do an/ManageSellProduct/ManageSellProduct/Pages/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/KHTN/Ky thuat lap trinh/Do an/ManageSellProduct/ManageSellProduct/Pages/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/KHTN/Ky thuat lap trinh/Do an/ManageSellProduct/ManageSellProduct/Pages/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/KHTN/Ky thuat lap trinh/Do an/ManageSellProduct/ManageSellProduct/Pages/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-md944qssl8

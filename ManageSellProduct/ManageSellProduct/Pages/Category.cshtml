@@ -1,0 +1,69 @@
+﻿@page
+@using ManageSellProduct.Business
+@using ManageSellProduct.Enum;
+@using ManageSellProduct.Helpers;
+@using ManageSellProduct.Models;
+@{
+    ViewData[CommonEnum.Title] = "Category page";
+    Category[] categories = CategoryBusiness.GetCategorys();
+
+    if (Request.Method == CommonEnum.Post)
+    {
+        string key = Request.Form[CommonEnum.Key];
+        if (string.IsNullOrWhiteSpace(key) == false)
+        {
+            key = key.ToLower();
+            Category[] existCategorys = categories;
+            categories = new Category[0];
+
+            for (int i = 0; i < existCategorys.Length; i++)
+            {
+                if (existCategorys[i].Code.ToLower().Contains(key) ||
+                    existCategorys[i].Name.ToLower().Contains(key))
+                {
+                    categories = CommonFunction.ArrayAddItem(categories, existCategorys[i]);
+                }
+            }
+        }
+    }
+}
+
+<div class="text-center">
+    <div class="form-container">
+        <form method="post">
+            <div class="form-group">
+                <label>Tu Khoa</label>
+                <input type="text" name="Key" value="">
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Tim">
+                <a href="CategoryDetail" class="link-add">Them</a>
+            </div>
+        </form>
+    </div>
+    @if (categories.Length > 0)
+    {
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Ma Loai</th>
+                    <th>Ten Loai</th>
+                    <th>Thao tac</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Category category in categories)
+                {
+                    <tr>
+                        <td>@category.Code</td>
+                        <td>@category.Name</td>
+                        <td>
+                            <a href="CategoryDetail?code=@category.Code&action=edit">Sua</a>
+                            <a href="CategoryDetail?code=@category.Code&action=delete">Xoa</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

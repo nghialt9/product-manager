@@ -1,0 +1,194 @@
+﻿html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    border: 1px solid #dddddd;
+}
+
+    .styled-table thead {
+        background-color: #009879;
+        color: #ffffff;
+        font-weight: bold;
+    }
+
+    .styled-table th, .styled-table td {
+        padding: 12px 15px;
+    }
+
+    .styled-table tbody tr {
+        border-bottom: 1px solid #dddddd;
+    }
+
+        .styled-table tbody tr:nth-of-type(even) {
+            background-color: #f3f3f3;
+        }
+
+        .styled-table tbody tr:last-of-type {
+            border-bottom: 2px solid #009879;
+        }
+
+/* styles.css */
+.form-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.form-group {
+    display: flex;
+    align-items: center;
+    margin: 10px;
+    position: relative;
+}
+
+label {
+    min-width: 100px;
+    text-align: right;
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="number"],
+input[type="password"],
+select {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+select {
+    width: 203px;
+}
+
+input[type="date"] {
+    margin-right: 35px;
+}
+
+.link-add,
+input[type="submit"] {
+    background-color: #009879;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    flex: 1;
+    margin-left: 25px;
+}
+
+    input[type="submit"]:hover {
+        background-color: #007a6d;
+    }
+
+.noti {
+    color: red;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.sub-form,
+ form {
+    display: flex;
+    flex-wrap: wrap;
+    background-color: #f4f4f4;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.sub-form {
+    background-color: #f9f9f9;
+    margin: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    text-align: center;
+}
+
+.link {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: white;
+    font-size: 60px;
+    font-weight: 900;
+    line-height: 0.37;
+    position: absolute;
+    top: -30px;
+    text-decoration: unset;
+}
+
+.link-delete {
+    background: red;
+}
+
+.link-addmore {
+    background: green;
+    top: -15px;
+    right: 20px;
+}
+
+.invoice {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #EB1A1F;
+    color: #EB1A1F;
+}
+
+    .invoice .styled-table,
+    .invoice .styled-table tbody tr {
+        border: 1px solid #EB1A1F;
+    }
+
+.store-info {
+    text-align: center;
+    line-height: 0;
+    margin-bottom: 30px;
+}
+
+.customer-info {
+    margin-bottom: 20px;
+}
+
+
+.invoice .styled-table thead {
+    background-color: #EB1A1F;
+}
+
+.invoice .styled-table tbody tr:last-of-type {
+    border-bottom: 2px solid #EB1A1F;
+}
+
+.total {
+    text-align: right;
+    font-weight: bold;
+}
