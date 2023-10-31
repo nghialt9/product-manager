@@ -179,10 +179,11 @@
     @if (string.IsNullOrWhiteSpace(sellInvoice.Code) == false && action.ToLower() == CommonEnum.Detail && products.Length > 0)
     {
         decimal totalPrice = 0;
-        DateTime now = DateTime.Now;
+        DateTime now = sellInvoice.InvoiceDate;
         <div class="invoice">
             <div class="store-info">
-                <h1>Tên Cửa Hàng: NghiaLT Shop</h1>
+                <h1>HÓA ĐƠN BÁN LẺ</h1>
+                <P>Tên Cửa Hàng: NghiaLT Shop</P>
                 <p>Địa chỉ cửa hàng: 248, CMT8, P.10, Q.3, TP.HCM</p>
                 <p>Số điện thoại: 0123-456-789</p>
                 <p>Ngày @now.Day, Tháng @now.Month, Năm @now.Year</p>
