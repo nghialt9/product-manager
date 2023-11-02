@@ -9,11 +9,12 @@
         public const string DateTime = "yyyyMMdd HHmmss";
         public const string DateTimeDisplay = "yyyy-MM-dd HH:mm:ss";
 
-        public const string ErrorPath = "Du lieu truyen vao khong hop le";
-        public const string Success = "Thao tác thanh cong";
-        public const string NotAllowDelete = "Khong the xoa {0} do gang buot data";
-        public const string NotAllowAdd = "Khong the them Ma {0} do bi trung";
-        public const string NotExist = "{0} khong ton tai";
+        public const string ErrorPath = "Dữ liệu truyền vào không hợp lệ";
+        public const string Success = "Thao tác thành công";
+        public const string NotAllowDelete = "Không thể xóa {0} do gàng buộc dữ liệu";
+        public const string NotAllowAdd = "Không thể thêm Mã {0} do bĩ trùng";
+        public const string NotExist = "{0} không tồn tại";
+        public const string ConfirmDelete = "Bạn có muốn xóa {0} không?";
 
         //action
         public const string Add = "add";

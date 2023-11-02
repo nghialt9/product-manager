@@ -18,7 +18,7 @@
 
         if (string.IsNullOrWhiteSpace(product.Code))
         {
-            noti = "San pham khong ton tai";
+            noti = string.Format(CommonEnum.NotExist, "Sản phẩm");
         }
         else
         {
@@ -60,7 +60,7 @@
         categorys = CategoryProvider.GetCategorys();
         if (categorys.Length == 0)
         {
-            noti = "Vui long nhap Loai hang truoc";
+            noti = "Vui lòng nhập Loại hàng trước";
         }
 
         
@@ -101,31 +101,31 @@
         <div class="form-container">
             <form method="post">
                 <div class="form-group">
-                    <label>Ma San Pham</label>
+                    <label>Mã Sản Phẩm</label>
                     <input type="text" disabled name="Code" value="@product.Code">
                 </div>
 
                 <div class="form-group">
-                    <label>Ten San Pham</label>
+                    <label>Tên Sản Phẩm</label>
                     <input type="text" name="Name" value="@product.Name">
                 </div>
 
                 <div class="form-group">
-                    <label>So ngay dung</label>
+                    <label>Số Ngày Dùng</label>
                     <input type="number" name="NumberDaysUse" value="@product.NumberDaysUse">
                 </div>
 
                 <div class="form-group">
-                    <label>Gia</label>
+                    <label>Giá</label>
                     <input type="number" name="Price" value="@product.Price">
                 </div>
 
                 <div class="form-group">
-                    <label>So luong</label>
+                    <label>Số Lượng</label>
                     <input type="number" name="Quantity" value="@product.Quantity">
                 </div>
 
-                <input type="submit" value="Luu">
+                <input type="submit" value="Lưu">
             </form>
         </div>
     }
@@ -135,32 +135,32 @@
         <div class="form-container">
             <form class="form-container" method="post">
                 <div class="form-group">
-                    <label>Ma San Pham</label>
+                    <label>Mã Sản Phẩm</label>
                     <input type="text" name="Code" value="">
                 </div>
 
                 <div class="form-group">
-                    <label>Ten San Pham</label>
+                    <label>Tên Sản Phẩm</label>
                     <input type="text" name="Name" value="">
                 </div>
 
                 <div class="form-group">
-                    <label>So ngay dung</label>
+                    <label>Số Ngày Dùng</label>
                     <input type="number" name="NumberDaysUse" value="">
                 </div>
 
                 <div class="form-group">
-                    <label>Cty San Xuat</label>
+                    <label>Cty Sản Xuất</label>
                     <input type="text" name="Manufacturer" value="">
                 </div>
 
                 <div class="form-group">
-                    <label>Ngay San Xuat</label>
+                    <label>Ngày Sản Xuất</label>
                     <input type="date" name="ManufactureDate" value="@CommonFunction.DateToString(DateTime.Now, CommonEnum.DateDisplay)">
                 </div>
 
                 <div class="form-group">
-                    <label>Loai</label>
+                    <label>Loại</label>
                     <select id="staticSelect" name="CategoryCode">
                         @foreach(Category category in categorys)
                         {
@@ -170,16 +170,16 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Gia</label>
+                    <label>Giá</label>
                     <input type="number" name="Price" value="">
                 </div>
 
                 <div class="form-group">
-                    <label>So luong</label>
+                    <label>Số Lượng</label>
                     <input type="number" name="Quantity" value="">
                 </div>
 
-                <input type="submit" value="Luu">
+                <input type="submit" value="Lưu">
             </form>
         </div>
     }
@@ -187,10 +187,10 @@
     @if (string.IsNullOrWhiteSpace(product.Code) == false && action.ToLower() == CommonEnum.Delete)
     {
         <div class="form-container">
-            <div>Ban co muon xoa san pham @product.Name khong?</div>
+            <div>@string.Format(CommonEnum.ConfirmDelete, product.Name)</div>
             <br>
             <form class="form-container" method="post">
-                <input type="submit" value="Xoa">
+                <input type="submit" value="Xóa">
             </form>
         </div>
     }

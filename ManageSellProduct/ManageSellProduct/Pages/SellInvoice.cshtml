@@ -19,6 +19,8 @@
             for (int i = 0; i < existSellInvoices.Length; i++)
             {
                 if (existSellInvoices[i].Code.ToLower().Contains(key) ||
+                    existSellInvoices[i].CustomerName.ToLower().Contains(key) ||
+                    existSellInvoices[i].Address.ToLower().Contains(key) ||
                     CommonFunction.DateToString(existSellInvoices[i].InvoiceDate, CommonEnum.DateDisplay).Contains(key) ||
                     existSellInvoices[i].TotalPrice.ToString().Contains(key))
                 {
@@ -33,12 +35,12 @@
     <div class="form-container">
         <form method="post">
             <div class="form-group">
-                <label>Tu Khoa</label>
+                <label>Từ Khóa</label>
                 <input type="text" name="Key" value="">
             </div>
             <div class="form-group">
-                <input type="submit" value="Tim">
-                <a href="SellInvoiceDetail" class="link-add">Them</a>
+                <input type="submit" value="Tìm">
+                <a href="SellInvoiceDetail" class="link-add">Thêm</a>
             </div>
         </form>
     </div>
@@ -48,10 +50,12 @@
         <table class="styled-table">
             <thead>
                 <tr>
-                    <th>Ma Hoa Don Ban</th>
-                    <th>Ngay Tao</th>
-                    <th>Tong Tien</th>
-                    <th>Thao tac</th>
+                    <th>Mã Hóa Đơn Bán</th>
+                    <th>Tên Khách Hàng</th>
+                    <th>Địa Chỉ Khách Hàng</th>
+                    <th>Ngày Tạo</th>
+                    <th>Tổng Tiền</th>
+                    <th>Thao Tác</th>
                 </tr>
             </thead>
             <tbody>
@@ -59,12 +63,14 @@
                 {
                     <tr>
                         <td>@sellInvoice.Code</td>
+                        <td>@sellInvoice.CustomerName</td>
+                        <td>@sellInvoice.Address</td>
                         <td>@CommonFunction.DateToString(sellInvoice.InvoiceDate, CommonEnum.DateDisplay)</td>
                         <td>@CommonFunction.FormatAsVietnameseCurrency(sellInvoice.TotalPrice)</td>
                         <td>
-                            <a href="SellInvoiceDetail?code=@sellInvoice.Code&action=edit">Sua</a>
-                            <a href="SellInvoiceDetail?code=@sellInvoice.Code&action=delete">Xoa</a>
-                            <a href="SellInvoiceDetail?code=@sellInvoice.Code&action=detail">Chi tiet</a>
+                            <a href="SellInvoiceDetail?code=@sellInvoice.Code&action=edit">Sửa</a>
+                            <a href="SellInvoiceDetail?code=@sellInvoice.Code&action=delete">Xóa</a>
+                            <a href="SellInvoiceDetail?code=@sellInvoice.Code&action=detail">Chi Tiết</a>
                         </td>
                     </tr>
                 }

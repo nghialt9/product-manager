@@ -3,6 +3,8 @@
     public struct SellInvoice
     {
         public string Code;
+        public string CustomerName;
+        public string Address;
         public DateTime InvoiceDate;
         public DetailSellProduct[] DetailSellProducts;
         public decimal TotalPrice;

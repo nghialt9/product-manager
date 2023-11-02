@@ -32,12 +32,12 @@
     <div class="form-container">
         <form method="post">
             <div class="form-group">
-                <label>Tu Khoa</label>
+                <label>Từ Khóa</label>
                 <input type="text" name="Key" value="">
             </div>
             <div class="form-group">
-                <input type="submit" value="Tim">
-                <a href="CategoryDetail" class="link-add">Them</a>
+                <input type="submit" value="Tìm">
+                <a href="CategoryDetail" class="link-add">Thêm</a>
             </div>
         </form>
     </div>
@@ -46,9 +46,9 @@
         <table class="styled-table">
             <thead>
                 <tr>
-                    <th>Ma Loai</th>
-                    <th>Ten Loai</th>
-                    <th>Thao tac</th>
+                    <th>Mã Loại</th>
+                    <th>Tên Loại</th>
+                    <th>Thao Tác</th>
                 </tr>
             </thead>
             <tbody>
@@ -58,8 +58,8 @@
                         <td>@category.Code</td>
                         <td>@category.Name</td>
                         <td>
-                            <a href="CategoryDetail?code=@category.Code&action=edit">Sua</a>
-                            <a href="CategoryDetail?code=@category.Code&action=delete">Xoa</a>
+                            <a href="CategoryDetail?code=@category.Code&action=edit">Sửa</a>
+                            <a href="CategoryDetail?code=@category.Code&action=delete">Xóa</a>
                         </td>
                     </tr>
                 }

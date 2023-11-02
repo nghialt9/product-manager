@@ -7,24 +7,25 @@
 
 @{
     string noti = string.Empty;
-    int count = 0;
     string code = Request.Query["code"];
     string action = Request.Query["action"];
     string subAction = Request.Query["subAction"];
     SellInvoice sellInvoice = new SellInvoice();
-    Product[] products = new Product[0];
+    DetailSellProduct[] detailSellProducts = new DetailSellProduct[1];
+    Product[] products = ProductBusiness.GetProducts();
 
     if (string.IsNullOrWhiteSpace(code) == false)
     {
-        products = ProductBusiness.GetProducts();
         sellInvoice = SellInvoiceBusiness.GetSellInvoice(code);
 
         if (string.IsNullOrWhiteSpace(sellInvoice.Code))
         {
-            noti = "San pham khong ton tai";
+            noti = string.Format(CommonEnum.NotExist, "Hóa đơn bán");
         }
         else
         {
+            #region Add Sell Detail
+
             if (subAction == "1")
             {
                 DetailSellProduct detailSellProduct = new DetailSellProduct
@@ -34,6 +35,11 @@
 
                 sellInvoice.DetailSellProducts = CommonFunction.ArrayAddItem(sellInvoice.DetailSellProducts, detailSellProduct);
             }
+
+            #endregion
+
+            #region Delete Sell Detail
+
             else if (string.IsNullOrWhiteSpace(subAction) == false)
             {
                 DetailSellProduct[] newData = new DetailSellProduct[sellInvoice.DetailSellProducts.Length - 1];
@@ -48,7 +54,10 @@
 
                 sellInvoice.DetailSellProducts = newData;
                 SellInvoiceBusiness.DeleteDetailSellInvoice(code, subAction);
+                Response.Redirect($"SellInvoiceDetail?code={code}&action=edit");
             }
+
+            #endregion
 
             if (Request.Method == CommonEnum.Post)
             {
@@ -58,14 +67,61 @@
                     goto End;
                 }
 
-                string name = Request.Form["Name"];
-
+                #region Logic Edit
                 if (action.ToLower() == CommonEnum.Edit)
                 {
                     SellInvoice editSellInvoice = sellInvoice;
+                    string cusName = Request.Form[$"CustomerName"];
+                    string cusAddress = Request.Form[$"Address"];
+
+                    if (CommonFunction.IsAllNullOrWhiteSpace(cusName, cusAddress))
+                    {
+                        noti = $"Vui lòng nhập Tên hoặc Địa Chỉ Khách Hàng";
+                        goto End;
+                    }
+
+                    editSellInvoice.DetailSellProducts = new DetailSellProduct[sellInvoice.DetailSellProducts.Length];
+
+                    for (int i = 1; i <= sellInvoice.DetailSellProducts.Length; i++)
+                    {
+                        string pCode = Request.Form[$"ProductCode {i}"];
+                        string pName = Request.Form[$"ProductName {i}"];
+                        int pQuantity = CommonFunction.StringToInt(Request.Form[$"Quantity {i}"]);
+                        decimal pPrice = CommonFunction.StringToDecimal(Request.Form[$"Price {i}"]);
+                        if (i > 1 && editSellInvoice.DetailSellProducts.Any(p => p.ProductCode == pCode))
+                        {
+                            noti = $"Không thể thêm sản phẩm trùng vời mã là {pCode}";
+                            goto End;
+                        }
+
+                        if (string.IsNullOrWhiteSpace(pName))
+                        {
+                            noti = $"Vui lòng nhập Tên SP {i}";
+                            goto End;
+                        }
+
+                        if (pQuantity <= 0)
+                        {
+                            noti = $"Vui lòng nhập Số Lượng {i} > 0";
+                            goto End;
+                        }
+
+                        if (pPrice <= 0)
+                        {
+                            noti = $"Vui lòng nhập Giá {i} > 0";
+                            goto End;
+                        }
+
+                        editSellInvoice.DetailSellProducts[i - 1].SellInvoiceCode = sellInvoice.Code;
+                        editSellInvoice.DetailSellProducts[i - 1].ProductCode = pCode;
+                        editSellInvoice.DetailSellProducts[i - 1].ProductName = pName;
+                        editSellInvoice.DetailSellProducts[i - 1].Quantity = pQuantity;
+                        editSellInvoice.DetailSellProducts[i - 1].Price = pPrice;
+                    }
 
                     noti = SellInvoiceBusiness.EditSellInvoice(editSellInvoice);
                 }
+                #endregion
 
                 End:
                 if (noti == CommonEnum.Success)
@@ -76,8 +132,10 @@
             }
         }
     }
+    #region Logic Add
     else
     {
+        //detailSellProducts = new DetailSellProduct[1];
         if (Request.Method == CommonEnum.Post)
         {
             string fCode = Request.Form["Code"];
@@ -104,26 +162,38 @@
                 {
                     Response.Redirect("SellInvoice");
                 }
-            } 
+            }
         }
     }
+    #endregion
 }
 
 <div>
+    <!--Edit-->
     @if (string.IsNullOrWhiteSpace(sellInvoice.Code) == false && action.ToLower() == CommonEnum.Edit && products.Length > 0)
     {
         <div class="form-container">
-            <form method="post" name="Main">
+            <form method="post" name="Main" id="main-form">
                 <div class="form-group">
-                    <label>Ma Hoa Don</label>
+                    <label>Mã Hóa Đơn</label>
                     <input type="text" disabled name="Code" value="@sellInvoice.Code">
                 </div>
 
                 <div class="form-group">
-                    <label>Ngay Tao</label>
+                    <label>Tên Khách Hàng</label>
+                    <input type="text" name="Code" value="@sellInvoice.CustomerName">
+                </div>
+
+                <div class="form-group">
+                    <label>Địa Chỉ Khách Hàng</label>
+                    <input type="text" name="Code" value="@sellInvoice.Address">
+                </div>
+
+                <div class="form-group">
+                    <label>Ngày Tạo</label>
                     <input type="date" name="InvoiceDate" value="@CommonFunction.DateToString(sellInvoice.InvoiceDate, CommonEnum.DateDisplay)">
                 </div>
-                
+
                 @if (sellInvoice.DetailSellProducts?.Length > 0)
                 {
                     int i = 0;
@@ -132,8 +202,8 @@
                         i++;
                         <div class="sub-form" name="Sub">
                             <div class="form-group">
-                                <label>Ma SP</label>
-                                <select id="productCode @i" name="ProductCode @i" onchange="select('productName @i', 'productCode @i')" onload="select('productName @i', 'productCode @i')">
+                                <label>Mã SP @i</label>
+                                <select id="productCode @i" name="ProductCode @i" onchange="select('productName @i', 'productCode @i')">
                                     @foreach (Product product in products)
                                     {
                                         if (@product.Code == detailSellProduct.ProductCode)
@@ -141,22 +211,22 @@
                                             <option value="@product.Code" selected>@product.Name</option>
                                         }
                                         else
-                                        {     
+                                        {
                                             <option value="@product.Code">@product.Name</option>
                                         }
                                     }
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Ten SP</label>
-                                <input type="text" id="productName @i" disabled name="ProductName @i" value="@detailSellProduct.ProductName">
+                                <label>Tên SP @i</label>
+                                <input type="text" id="productName @i" readonly name="ProductName @i" value="@detailSellProduct.ProductName" oninvalid="select('productName @i', 'productCode @i')">
                             </div>
                             <div class="form-group">
-                                <label>So Luong</label>
+                                <label>Số Lượng @i</label>
                                 <input type="number" name="Quantity @i" value="@detailSellProduct.Quantity">
                             </div>
                             <div class="form-group">
-                                <label>Gia</label>
+                                <label>Giá @i</label>
                                 <input type="number" name="Price @i" value="@detailSellProduct.Price">
                             </div>
                             <div class="form-group">
@@ -171,28 +241,28 @@
                     <a class="link link-addmore" href="SellInvoiceDetail?code=@sellInvoice.Code&action=edit&subAction=1">+</a>
                 </div>
 
-                <input type="submit" value="Luu">
+                <input type="submit" value="Lưu">
             </form>
         </div>
     }
 
+    <!--Detail-->
     @if (string.IsNullOrWhiteSpace(sellInvoice.Code) == false && action.ToLower() == CommonEnum.Detail && products.Length > 0)
     {
         decimal totalPrice = 0;
-        DateTime now = sellInvoice.InvoiceDate;
+        DateTime now = DateTime.Now;
         <div class="invoice">
             <div class="store-info">
-                <h1>HÓA ĐƠN BÁN LẺ</h1>
-                <P>Tên Cửa Hàng: NghiaLT Shop</P>
-                <p>Địa chỉ cửa hàng: 248, CMT8, P.10, Q.3, TP.HCM</p>
-                <p>Số điện thoại: 0123-456-789</p>
+                <h1>Tên Cửa Hàng: Min Dress</h1>
+                <p>Địa chỉ cửa hàng: 285, CMT8, P.10, Q.3, TP.HCM</p>
+                <p>Số điện thoại: 0972-737-308</p>
                 <p>Ngày @now.Day, Tháng @now.Month, Năm @now.Year</p>
             </div>
 
             <div class="customer-info">
                 <h2>Thông tin khách hàng</h2>
-                <p>Tên khách hàng: ..............................................................................................................................</p>
-                <p>Địa chỉ khách hàng: .......................................................................................................................</p>
+                <p>Tên khách hàng: @sellInvoice.CustomerName</p>
+                <p>Địa chỉ khách hàng: @sellInvoice.Address</p>
             </div>
 
             <table class="styled-table">
@@ -208,85 +278,138 @@
                 <tbody>
                     @if (sellInvoice.DetailSellProducts?.Length > 0)
                     {
-                        int i = 0;
-                        foreach (DetailSellProduct detailSellProduct in sellInvoice.DetailSellProducts)
+                        for (int i = 1; i < 11; i++)
                         {
-                            decimal total = detailSellProduct.Quantity * detailSellProduct.Price;
-                            totalPrice += total;
-                            i++;
-                            <tr>
-                                <td>@i</td>
-                                <td>@detailSellProduct.ProductName</td>
-                                <td>@CommonFunction.FormatAsVietnameseCurrency(detailSellProduct.Price)</td>
-                                <td>@CommonFunction.FormatNumber(detailSellProduct.Quantity)</td>
-                                <td>@CommonFunction.FormatAsVietnameseCurrency(total)</td>
-                            </tr>
+                            if (i <= sellInvoice.DetailSellProducts.Length)
+                            {
+                                decimal total = sellInvoice.DetailSellProducts[i - 1].Quantity * sellInvoice.DetailSellProducts[i - 1].Price;
+                                totalPrice += total;
+                                <tr>
+                                    <td>@i</td>
+                                    <td>@sellInvoice.DetailSellProducts[i-1].ProductName</td>
+                                    <td>@CommonFunction.FormatAsVietnameseCurrency(sellInvoice.DetailSellProducts[i-1].Price)</td>
+                                    <td>@CommonFunction.FormatNumber(sellInvoice.DetailSellProducts[i-1].Quantity)</td>
+                                    <td>@CommonFunction.FormatAsVietnameseCurrency(total)</td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td>@i</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            }
                         }
+
+                        <tr>
+                            <td colspan="5">
+                                <div class="total">
+                                    Thành Tiền: @CommonFunction.FormatAsVietnameseCurrency(totalPrice)
+                                </div>
+                            </td>
+                        </tr>
                     }
                 </tbody>
             </table>
-
-            <div class="total">
-                <p>Tổng cộng: @CommonFunction.FormatAsVietnameseCurrency(totalPrice)</p>
+            <div class="letter-total">
+                Viết bằng chữ: @CommonFunction.NumberToWordsVn(totalPrice.ToString())
             </div>
         </div>
     }
 
+    <!--Add-->
     @if (string.IsNullOrWhiteSpace(code))
     {
         <div class="form-container">
-            <form class="form-container" method="post">
+            <form method="post" name="Main" id="main-form">
                 <div class="form-group">
-                    <label>Ma San Pham</label>
-                    <input type="text" name="Code" value="">
+                    <label>Mã Hóa Đơn</label>
+                    <input type="text" name="Code">
                 </div>
 
                 <div class="form-group">
-                    <label>Ten San Pham</label>
-                    <input type="text" name="Name" value="">
+                    <label>Tên Khách Hàng</label>
+                    <input type="text" name="CustomerName">
                 </div>
 
                 <div class="form-group">
-                    <label>So ngay dung</label>
-                    <input type="number" name="NumberDaysUse" value="">
+                    <label>Địa Chỉ Khách Hàng</label>
+                    <input type="text" name="Address">
                 </div>
 
                 <div class="form-group">
-                    <label>Cty San Xuat</label>
-                    <input type="text" name="Manufacturer" value="">
+                    <label>Ngày Tạo</label>
+                    <input type="date" name="InvoiceDate" value="@CommonFunction.DateToString(DateTime.Now, CommonEnum.DateDisplay)">
                 </div>
+
+                @if (detailSellProducts.Length > 0)
+                {
+                    int i = 0;
+                    foreach (DetailSellProduct detailSellProduct in detailSellProducts)
+                    {
+                        i++;
+                        <div class="sub-form" name="Sub">
+                            <div class="form-group">
+                                <label>Mã SP @i</label>
+                                <select id="productCode @i" name="ProductCode @i" onchange="select('productName @i', 'productCode @i')">
+                                    @foreach (Product product in products)
+                                    {
+                                        if (@product.Code == detailSellProduct.ProductCode)
+                                        {
+                                            <option value="@product.Code" selected>@product.Name</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@product.Code">@product.Name</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Tên SP @i</label>
+                                <input type="text" id="productName @i" readonly name="ProductName @i" value="@detailSellProduct.ProductName" oninvalid="select('productName @i', 'productCode @i')">
+                            </div>
+                            <div class="form-group">
+                                <label>Số Lượng @i</label>
+                                <input type="number" name="Quantity @i" value="@detailSellProduct.Quantity">
+                            </div>
+                            <div class="form-group">
+                                <label>Giá @i</label>
+                                <input type="number" name="Price @i" value="@detailSellProduct.Price">
+                            </div>
+                            <div class="form-group">
+                                <a class="link link-delete" href="SellInvoiceDetail?code=@sellInvoice.Code&action=edit&subAction=@detailSellProduct.ProductCode">-</a>
+                            </div>
+                        </div>
+                    }
+                }
 
                 <div class="form-group">
-                    <label>Ngay San Xuat</label>
-                    <input type="date" name="ManufactureDate" value="@CommonFunction.DateToString(DateTime.Now, CommonEnum.DateDisplay)">
+                    <label></label>
+                    <a class="link link-addmore" href="SellInvoiceDetail?code=@sellInvoice.Code&action=edit&subAction=1">+</a>
                 </div>
 
-                <div class="form-group">
-                    <label>Gia</label>
-                    <input type="number" name="Price" value="">
-                </div>
-
-                <div class="form-group">
-                    <label>So luong</label>
-                    <input type="number" name="Quantity" value="">
-                </div>
-
-                <input type="submit" value="Luu">
+                <input type="submit" value="Lưu">
             </form>
         </div>
     }
 
+    <!--Delete-->
     @if (string.IsNullOrWhiteSpace(sellInvoice.Code) == false && action.ToLower() == CommonEnum.Delete)
     {
         <div class="form-container">
-            <div>Ban co muon xoa san pham @sellInvoice.Code khong?</div>
+            <div>@string.Format(CommonEnum.ConfirmDelete, sellInvoice.Code)</div>
             <br>
             <form class="form-container" method="post">
-                <input type="submit" value="Xoa">
+                <input type="submit" value="Xóa">
             </form>
         </div>
     }
 
+    <!--Noti-->
     @if (noti != CommonEnum.Success)
     {
         <div class="noti">@noti</div>

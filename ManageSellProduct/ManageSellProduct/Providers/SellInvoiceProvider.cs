@@ -141,8 +141,10 @@ namespace ManageSellProduct.Providers
             SellInvoice sellInvoice = new SellInvoice();    
             string[] arr = data.Split(CommonEnum.Separator);
             sellInvoice.Code = arr[0];
-            sellInvoice.InvoiceDate = CommonFunction.StringToDate(arr[1]);
-            sellInvoice.TotalPrice = CommonFunction.StringToInt(arr[2]);
+            sellInvoice.CustomerName = arr[1];
+            sellInvoice.Address = arr[2];
+            sellInvoice.InvoiceDate = CommonFunction.StringToDate(arr[3]);
+            sellInvoice.TotalPrice = CommonFunction.StringToInt(arr[4]);
 
             return sellInvoice;
         }
@@ -150,6 +152,8 @@ namespace ManageSellProduct.Providers
         private static string SellInvoiceToString(SellInvoice sellInvoice, string formatDate = CommonEnum.Date)
         {
             return $"{sellInvoice.Code}{CommonEnum.Separator}" +
+                $"{sellInvoice.CustomerName}{CommonEnum.Separator}" +
+                $"{sellInvoice.Address}{CommonEnum.Separator}" +
                 $"{CommonFunction.DateToString(sellInvoice.InvoiceDate, formatDate)}{CommonEnum.Separator}" +
                 $"{GetTotalPrice(sellInvoice.DetailSellProducts)}";
         }

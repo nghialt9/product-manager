@@ -20,7 +20,7 @@ body {
 .styled-table {
     width: 100%;
     border-collapse: collapse;
-    margin: 25px 0;
+    margin: 5px 0;
     font-size: 0.9em;
     font-family: sans-serif;
     border: 1px solid #dddddd;
@@ -172,7 +172,8 @@ input[type="submit"] {
 .store-info {
     text-align: center;
     line-height: 0;
-    margin-bottom: 30px;
+    margin-bottom: 15px;
+    margin-top: -20px;
 }
 
 .customer-info {
@@ -191,4 +192,8 @@ input[type="submit"] {
 .total {
     text-align: right;
     font-weight: bold;
+}
+
+.letter-total {
+    font-style: italic;
 }
