@@ -138,7 +138,7 @@ namespace ManageSellProduct.Providers
 
         private static SellInvoice StringToSellInvoice(string data)
         {
-            SellInvoice sellInvoice = new SellInvoice();    
+            SellInvoice sellInvoice = new SellInvoice();
             string[] arr = data.Split(CommonEnum.Separator);
             sellInvoice.Code = arr[0];
             sellInvoice.CustomerName = arr[1];

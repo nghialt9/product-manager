@@ -1,0 +1,80 @@
+﻿@page
+@using ManageSellProduct.Business
+@using ManageSellProduct.Enum;
+@using ManageSellProduct.Helpers;
+@using ManageSellProduct.Models;
+@{
+    ViewData[CommonEnum.Title] = "ImportInvoice page";
+    ImportInvoice[] importInvoices = ImportInvoiceBusiness.GetImportInvoices();
+
+    if (Request.Method == CommonEnum.Post)
+    {
+        string key = Request.Form[CommonEnum.Key];
+        if(string.IsNullOrWhiteSpace(key) == false)
+        {
+            key = key.ToLower();
+            ImportInvoice[] existImportInvoices = importInvoices;
+            importInvoices = new ImportInvoice[0];
+
+            for (int i = 0; i < existImportInvoices.Length; i++)
+            {
+                if (existImportInvoices[i].Code.ToLower().Contains(key) ||
+                    existImportInvoices[i].Supplier.ToLower().Contains(key) ||
+                    existImportInvoices[i].Address.ToLower().Contains(key) ||
+                    CommonFunction.DateToString(existImportInvoices[i].InvoiceDate, CommonEnum.DateDisplay).Contains(key) ||
+                    existImportInvoices[i].TotalPrice.ToString().Contains(key))
+                {
+                    importInvoices = CommonFunction.ArrayAddItem(importInvoices, existImportInvoices[i]);
+                }
+            }
+        }
+    }
+}
+
+<div class="text-center">
+    <div class="form-container">
+        <form method="post">
+            <div class="form-group">
+                <label>Từ Khóa</label>
+                <input type="text" name="Key" value="">
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Tìm">
+                <a href="ImportInvoiceDetail" class="link-add">Thêm</a>
+            </div>
+        </form>
+    </div>
+
+    @if (importInvoices.Length > 0)
+    {
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Mã Hóa Đơn Bán</th>
+                    <th>Nhà Cung Cấp</th>
+                    <th>Địa Chỉ Nhà Cung Cấp</th>
+                    <th>Ngày Tạo</th>
+                    <th>Tổng Tiền</th>
+                    <th>Thao Tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (ImportInvoice importInvoice in importInvoices)
+                {
+                    <tr>
+                        <td>@importInvoice.Code</td>
+                        <td>@importInvoice.Supplier</td>
+                        <td>@importInvoice.Address</td>
+                        <td>@CommonFunction.DateToString(importInvoice.InvoiceDate, CommonEnum.DateDisplay)</td>
+                        <td>@CommonFunction.FormatAsVietnameseCurrency(importInvoice.TotalPrice)</td>
+                        <td>
+                            <a href="ImportInvoiceDetail?code=@importInvoice.Code&action=edit">Sửa</a>
+                            <a href="ImportInvoiceDetail?code=@importInvoice.Code&action=delete">Xóa</a>
+                            <a href="ImportInvoiceDetail?code=@importInvoice.Code&action=detail">Chi Tiết</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

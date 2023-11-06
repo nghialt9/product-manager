@@ -73,7 +73,7 @@ namespace ManageSellProduct.Providers
             else
             {
                 //remove old DetailImportProduct
-                string[] newData = DeleteDetailImportProducts(detailImportProducts[0].SellInvoiceCode, false);
+                string[] newData = DeleteDetailImportProducts(detailImportProducts[0].ImportInvoiceCode, false);
 
                 //add new DetailImportProduct
                 string[] editData = new string[newData.Length + detailImportProducts.Length];
@@ -109,7 +109,7 @@ namespace ManageSellProduct.Providers
                 int j = 0;
                 for (int i = 0; i < data.Length; i++)
                 {
-                    if (sellInvoiceCode != StringToDetailImportProduct(data[i]).SellInvoiceCode)
+                    if (sellInvoiceCode != StringToDetailImportProduct(data[i]).ImportInvoiceCode)
                     {
                         newData[j++] = data[i];
                     }
@@ -128,7 +128,7 @@ namespace ManageSellProduct.Providers
         {
             DetailImportProduct detailImportProduct = new DetailImportProduct();    
             string[] arr = data.Split(CommonEnum.Separator);
-            detailImportProduct.SellInvoiceCode = arr[0];
+            detailImportProduct.ImportInvoiceCode = arr[0];
             detailImportProduct.ProductName = arr[1];
             detailImportProduct.ProductCode= arr[2];
             detailImportProduct.Quantity = CommonFunction.StringToInt(arr[3]);
@@ -139,7 +139,7 @@ namespace ManageSellProduct.Providers
 
         private static string DetailImportProductToString(DetailImportProduct detailImportProduct, string formatDate = CommonEnum.Date)
         {
-            return $"{detailImportProduct.SellInvoiceCode}{CommonEnum.Separator}" +
+            return $"{detailImportProduct.ImportInvoiceCode}{CommonEnum.Separator}" +
                 $"{detailImportProduct.ProductName}{CommonEnum.Separator}" +
                 $"{detailImportProduct.ProductCode}{CommonEnum.Separator}" +
                 $"{detailImportProduct.Quantity}{CommonEnum.Separator}" +

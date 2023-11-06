@@ -27,7 +27,7 @@ namespace ManageSellProduct.Providers
             return new ImportInvoice[] { };
         }
 
-        public static ImportInvoice GetSellInvoicesByCode(string code)
+        public static ImportInvoice GetImportInvoicesByCode(string code)
         {
             ImportInvoice[] importInvoices = GetImportInvoices();
 
@@ -47,9 +47,9 @@ namespace ManageSellProduct.Providers
             return importInvoice;
         }
 
-        public static ImportInvoice GetDetailImportInvoices(string code)
+        public static ImportInvoice GetDetailImportInvoice(string code)
         {
-            ImportInvoice importInvoice = GetSellInvoicesByCode(code);
+            ImportInvoice importInvoice = GetImportInvoicesByCode(code);
             importInvoice.DetailImportProducts = DetailImportProductProvider.GetDetailImportProducts(code);
 
             return importInvoice;
@@ -143,7 +143,8 @@ namespace ManageSellProduct.Providers
             importInvoice.Code = arr[0];
             importInvoice.InvoiceDate = CommonFunction.StringToDate(arr[1]);
             importInvoice.Supplier = arr[2];
-            importInvoice.TotalPrice = CommonFunction.StringToInt(arr[3]);
+            importInvoice.Address = arr[3];
+            importInvoice.TotalPrice = CommonFunction.StringToInt(arr[4]);
 
             return importInvoice;
         }
@@ -153,6 +154,7 @@ namespace ManageSellProduct.Providers
             return $"{importInvoice.Code}{CommonEnum.Separator}" +
                 $"{CommonFunction.DateToString(importInvoice.InvoiceDate, formatDate)}{CommonEnum.Separator}" +
                 $"{importInvoice.Supplier}{CommonEnum.Separator}" +
+                $"{importInvoice.Address}{CommonEnum.Separator}" +
                 $"{GetTotalPrice(importInvoice.DetailImportProducts)}";
         }
 

@@ -5,13 +5,14 @@
         public string Code;
         public DateTime InvoiceDate;
         public string Supplier;
+        public string Address;
         public DetailImportProduct[] DetailImportProducts;
         public decimal TotalPrice;
     }
 
     public struct DetailImportProduct
     {
-        public string SellInvoiceCode;
+        public string ImportInvoiceCode;
         public string ProductName;
         public string ProductCode;
         public int Quantity;

@@ -12,12 +12,13 @@
         public const string ErrorPath = "Dữ liệu truyền vào không hợp lệ";
         public const string Success = "Thao tác thành công";
         public const string NotAllowDelete = "Không thể xóa {0} do gàng buộc dữ liệu";
-        public const string NotAllowAdd = "Không thể thêm Mã {0} do bĩ trùng";
+        public const string NotAllowAdd = "Không thể thêm Mã {0} do bị trùng";
         public const string NotExist = "{0} không tồn tại";
         public const string ConfirmDelete = "Bạn có muốn xóa {0} không?";
 
         //action
         public const string Add = "add";
+        public const string Save = "save";
         public const string Edit = "edit";
         public const string Delete = "delete";
         public const string Detail = "detail";

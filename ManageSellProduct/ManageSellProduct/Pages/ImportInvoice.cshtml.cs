@@ -2,11 +2,11 @@
 
 namespace ManageSellProduct.Pages
 {
-    public class SellInvoiceModel : PageModel
+    public class ImportInvoiceModel : PageModel
     {
-        private readonly ILogger<SellInvoiceModel> _logger;
+        private readonly ILogger<ImportInvoiceModel> _logger;
 
-        public SellInvoiceModel(ILogger<SellInvoiceModel> logger)
+        public ImportInvoiceModel(ILogger<ImportInvoiceModel> logger)
         {
             _logger = logger;
         }

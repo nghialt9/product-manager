@@ -1,1 +1,3 @@
 SellInvoice001|Lâm Trọng Nghĩa|10, Kha Vạn Cân, Dĩ An, Bình Dương|20231015|275000
+SellInvoice002|LAM TRONG NGHIA|195 Điện Biên Phủ, P.15, Bình Thạnh|20231104|2000002
+SellInvoice003|LAM TRONG NGHIA|195 Điện Biên Phủ, P.15, Bình Thạnh|20231031|3663002

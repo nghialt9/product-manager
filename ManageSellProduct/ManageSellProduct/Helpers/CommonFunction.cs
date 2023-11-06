@@ -145,6 +145,14 @@ namespace ManageSellProduct.Helpers
         }
 
         /// <summary>
+        ///     Indicates whether a specified string is null, empty, or consists only of white-space characters.
+        /// </summary>
+        public static bool IsNullOrWhiteSpace(params string[] array)
+        {
+            return array.Any(string.IsNullOrWhiteSpace);
+        }
+
+        /// <summary>
         /// Determines whether is all items of the specified array are null or white space.
         /// </summary>
         public static bool IsAllNullOrWhiteSpace(params string[] array)
@@ -316,5 +324,13 @@ namespace ManageSellProduct.Helpers
 
             return result;
         }
-    }
+
+        /// <summary>
+        ///     Indicates whether a specified string is in array.
+        /// </summary>
+        public static bool IsInArray(string value, params string[] array)
+        {
+            return array.Any(data => value == data);
+        }
+    }    
 }

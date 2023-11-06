@@ -1,0 +1,5 @@
+ImportInvoice001|Bánh Lá|BanhLa001|3210|13500
+ImportInvoice001|Banh La|BanhLa002|200|15000
+ImportInvoice001|Kẹo Dừa|KeoDeo001|500|20000
+ImportInvoice001|Bánh Lá Dứa|BanhLa003|320|5300
+ImportInvoice002|Bánh Bao|BanhLa001|1000|15321

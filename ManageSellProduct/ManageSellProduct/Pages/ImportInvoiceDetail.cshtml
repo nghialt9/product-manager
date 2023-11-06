@@ -10,15 +10,14 @@
     string code = Request.Query["code"];
     string action = Request.Query["action"];
     string subAction = Request.Query["subAction"];
-    SellInvoice sellInvoice = new SellInvoice();
-    DetailSellProduct[] detailSellProducts = new DetailSellProduct[1];
-    Product[] products = ProductBusiness.GetProducts();
+    ImportInvoice importInvoice = new ImportInvoice();
+    DetailImportProduct[] detailImportProducts = new DetailImportProduct[1];
 
     if (string.IsNullOrWhiteSpace(code) == false && code != CommonEnum.Add)
     {
-        sellInvoice = SellInvoiceBusiness.GetSellInvoice(code);
+        importInvoice = ImportInvoiceBusiness.GetImportInvoice(code);
 
-        if (string.IsNullOrWhiteSpace(sellInvoice.Code))
+        if (string.IsNullOrWhiteSpace(importInvoice.Code))
         {
             noti = string.Format(CommonEnum.NotExist, "Hóa đơn bán");
         }
@@ -28,18 +27,12 @@
 
             if (subAction == "1")
             {
-                if (products.Length == sellInvoice.DetailSellProducts.Length)
-                {
-                    noti = "Đã hết sản phẩm";
-                    //goto End;
-                }
-
-                DetailSellProduct detailSellProduct = new DetailSellProduct
+                DetailImportProduct detailImportProduct = new DetailImportProduct
                         {
                             ProductCode = string.Empty
                         };
 
-                sellInvoice.DetailSellProducts = CommonFunction.ArrayAddItem(sellInvoice.DetailSellProducts, detailSellProduct);
+                importInvoice.DetailImportProducts = CommonFunction.ArrayAddItem(importInvoice.DetailImportProducts, detailImportProduct);
             }
 
             #endregion
@@ -48,19 +41,19 @@
 
             else if (string.IsNullOrWhiteSpace(subAction) == false && action.ToLower() == CommonEnum.Edit)
             {
-                DetailSellProduct[] newData = new DetailSellProduct[sellInvoice.DetailSellProducts.Length - 1];
+                DetailImportProduct[] newData = new DetailImportProduct[importInvoice.DetailImportProducts.Length - 1];
                 int j = 0;
-                for (int i = 0; i < sellInvoice.DetailSellProducts.Length; i++)
+                for (int i = 0; i < importInvoice.DetailImportProducts.Length; i++)
                 {
-                    if (subAction != sellInvoice.DetailSellProducts[i].ProductCode)
+                    if (subAction != importInvoice.DetailImportProducts[i].ProductCode)
                     {
-                        newData[j++] = sellInvoice.DetailSellProducts[i];
+                        newData[j++] = importInvoice.DetailImportProducts[i];
                     }
                 }
 
-                sellInvoice.DetailSellProducts = newData;
-                SellInvoiceBusiness.DeleteDetailSellInvoice(code, subAction);
-                Response.Redirect($"SellInvoiceDetail?code={code}&action=edit");
+                importInvoice.DetailImportProducts = newData;
+                ImportInvoiceBusiness.DeleteDetailImportInvoice(code, subAction);
+                Response.Redirect($"ImportInvoiceDetail?code={code}&action=edit");
             }
 
             #endregion
@@ -69,34 +62,34 @@
             {
                 if (action.ToLower() == CommonEnum.Delete)
                 {
-                    noti = SellInvoiceBusiness.DeleteSellInvoice(code);
+                    noti = ImportInvoiceBusiness.DeleteImportInvoice(code);
                     goto End;
                 }
 
                 #region Logic Edit or Add second
                 if (CommonFunction.IsInArray(action.ToLower(), CommonEnum.Edit, CommonEnum.Add, CommonEnum.Save))
                 {
-                    SellInvoice editSellInvoice = sellInvoice;
-                    string cusName = Request.Form[$"CustomerName"];
+                    ImportInvoice editImportInvoice = importInvoice;
+                    string cusSupplier = Request.Form[$"Supplier"];
                     string cusAddress = Request.Form[$"Address"];
 
-                    if (CommonFunction.IsNullOrWhiteSpace(cusName, cusAddress))
+                    if (CommonFunction.IsNullOrWhiteSpace(cusSupplier, cusAddress))
                     {
-                        noti = $"Vui lòng nhập Tên hoặc Địa Chỉ Khách Hàng";
+                        noti = $"Vui lòng nhập Tên hoặc Địa Chỉ Nhà Cung Cấp";
                         goto End;
                     }
 
-                    editSellInvoice.CustomerName = cusName;
-                    editSellInvoice.Address = cusAddress;
-                    editSellInvoice.DetailSellProducts = new DetailSellProduct[sellInvoice.DetailSellProducts.Length];
+                    editImportInvoice.Supplier = cusSupplier;
+                    editImportInvoice.Address = cusAddress;
+                    editImportInvoice.DetailImportProducts = new DetailImportProduct[importInvoice.DetailImportProducts.Length];
 
-                    for (int i = 1; i <= sellInvoice.DetailSellProducts.Length; i++)
+                    for (int i = 1; i <= importInvoice.DetailImportProducts.Length; i++)
                     {
                         string pCode = Request.Form[$"ProductCode {i}"];
                         string pName = Request.Form[$"ProductName {i}"];
                         int pQuantity = CommonFunction.StringToInt(Request.Form[$"Quantity {i}"]);
                         decimal pPrice = CommonFunction.StringToDecimal(Request.Form[$"Price {i}"]);
-                        if (string.IsNullOrWhiteSpace(pName) == false && editSellInvoice.DetailSellProducts.Any(p => p.ProductCode == pCode))
+                        if (string.IsNullOrWhiteSpace(pName) == false && editImportInvoice.DetailImportProducts.Any(p => p.ProductCode == pCode))
                         {
                             noti = $"Không thể thêm sản phẩm trùng vời mã là {pCode}";
                             goto End;
@@ -120,14 +113,14 @@
                             goto End;
                         }
 
-                        editSellInvoice.DetailSellProducts[i - 1].SellInvoiceCode = sellInvoice.Code;
-                        editSellInvoice.DetailSellProducts[i - 1].ProductCode = pCode;
-                        editSellInvoice.DetailSellProducts[i - 1].ProductName = pName;
-                        editSellInvoice.DetailSellProducts[i - 1].Quantity = pQuantity;
-                        editSellInvoice.DetailSellProducts[i - 1].Price = pPrice;
+                        editImportInvoice.DetailImportProducts[i - 1].ImportInvoiceCode = importInvoice.Code;
+                        editImportInvoice.DetailImportProducts[i - 1].ProductCode = pCode;
+                        editImportInvoice.DetailImportProducts[i - 1].ProductName = pName;
+                        editImportInvoice.DetailImportProducts[i - 1].Quantity = pQuantity;
+                        editImportInvoice.DetailImportProducts[i - 1].Price = pPrice;
                     }
 
-                    noti = SellInvoiceBusiness.EditSellInvoice(editSellInvoice);
+                    noti = ImportInvoiceBusiness.EditImportInvoice(editImportInvoice);
                 }
 
                 #endregion
@@ -136,18 +129,18 @@
             End:
             if (noti == CommonEnum.Success && CommonEnum.Save == action.ToLower())
             {
-                Response.Redirect("SellInvoice");
+                Response.Redirect("ImportInvoice");
             }
 
             if (noti == CommonEnum.Success && CommonEnum.Edit == action.ToLower())
             {
-                sellInvoice = SellInvoiceBusiness.GetSellInvoice(code);
-                DetailSellProduct detailSellProduct = new DetailSellProduct
+                importInvoice = ImportInvoiceBusiness.GetImportInvoice(code);
+                DetailImportProduct detailImportProduct = new DetailImportProduct
                         {
                             ProductCode = string.Empty
                         };
 
-                sellInvoice.DetailSellProducts = CommonFunction.ArrayAddItem(sellInvoice.DetailSellProducts, detailSellProduct);
+                importInvoice.DetailImportProducts = CommonFunction.ArrayAddItem(importInvoice.DetailImportProducts, detailImportProduct);
             }
         }
     }
@@ -156,39 +149,39 @@
 
     else
     {
-        sellInvoice = new SellInvoice();
-        sellInvoice.DetailSellProducts = new DetailSellProduct[1];
+        importInvoice = new ImportInvoice();
+        importInvoice.DetailImportProducts = new DetailImportProduct[1];
 
         if (Request.Method == CommonEnum.Post)
         {
             string iCode = Request.Form[$"Code"];
             if (string.IsNullOrWhiteSpace(iCode) == false)
             {
-                sellInvoice = SellInvoiceBusiness.GetSellInvoice(iCode);
-                sellInvoice.DetailSellProducts = new DetailSellProduct[1];
+                importInvoice = ImportInvoiceBusiness.GetImportInvoice(iCode);
+                importInvoice.DetailImportProducts = new DetailImportProduct[1];
             }
 
-            if (string.IsNullOrWhiteSpace(sellInvoice.Code) == false)
+            if (string.IsNullOrWhiteSpace(importInvoice.Code) == false)
             {
                 noti = string.Format(CommonEnum.NotAllowAdd, iCode);
 
                 goto End;
             }
 
-            string cusName = Request.Form[$"CustomerName"];
+            string cusSupplier = Request.Form[$"Supplier"];
             string cusAddress = Request.Form[$"Address"];
             DateTime iDate = CommonFunction.StringToDate(Request.Form[$"InvoiceDate"], CommonEnum.DateDisplay);
 
-            if (CommonFunction.IsNullOrWhiteSpace(iCode, cusName, cusAddress))
+            if (CommonFunction.IsNullOrWhiteSpace(iCode, cusSupplier, cusAddress))
             {
                 noti = "Vui lòng nhập Mã Hóa Đơn hoặc Tên hoặc Địa Chỉ Khách Hàng";
                 goto End;
             }
 
-            sellInvoice.Code = iCode;
-            sellInvoice.CustomerName = cusName;
-            sellInvoice.Address = cusAddress;
-            sellInvoice.InvoiceDate = iDate;
+            importInvoice.Code = iCode;
+            importInvoice.Supplier = cusSupplier;
+            importInvoice.Address = cusAddress;
+            importInvoice.InvoiceDate = iDate;
 
             string pCode = Request.Form[$"ProductCode"];
             string pName = Request.Form[$"ProductName"];
@@ -213,23 +206,23 @@
                 goto End;
             }
 
-            sellInvoice.DetailSellProducts[0].SellInvoiceCode = sellInvoice.Code;
-            sellInvoice.DetailSellProducts[0].ProductCode = pCode;
-            sellInvoice.DetailSellProducts[0].ProductName = pName;
-            sellInvoice.DetailSellProducts[0].Quantity = pQuantity;
-            sellInvoice.DetailSellProducts[0].Price = pPrice;
+            importInvoice.DetailImportProducts[0].ImportInvoiceCode = importInvoice.Code;
+            importInvoice.DetailImportProducts[0].ProductCode = pCode;
+            importInvoice.DetailImportProducts[0].ProductName = pName;
+            importInvoice.DetailImportProducts[0].Quantity = pQuantity;
+            importInvoice.DetailImportProducts[0].Price = pPrice;
 
-            noti = SellInvoiceBusiness.AddSellInvoice(sellInvoice);
+            noti = ImportInvoiceBusiness.AddImportInvoice(importInvoice);
 
             if (subAction == "1")
             {
-                Response.Redirect($"SellInvoiceDetail?code={iCode}&action=edit&subAction=1");
+                Response.Redirect($"ImportInvoiceDetail?code={iCode}&action=edit&subAction=1");
             }
 
             End:
             if (noti == CommonEnum.Success && string.IsNullOrWhiteSpace(code))
             {
-                Response.Redirect("SellInvoice");
+                Response.Redirect("ImportInvoice");
             }
         }
     }
@@ -239,67 +232,55 @@
 
 <div>
     <!--Edit-->
-    @if (string.IsNullOrWhiteSpace(sellInvoice.Code) == false && CommonFunction.IsInArray(action?.ToLower(), CommonEnum.Edit, CommonEnum.Save) && products.Length > 0)
+    @if (string.IsNullOrWhiteSpace(importInvoice.Code) == false && CommonFunction.IsInArray(action?.ToLower(), CommonEnum.Edit, CommonEnum.Save))
     {
         <div class="form-container">
             <form method="post" name="Main" id="form-edit">
                 <div class="form-group">
                     <label>Mã Hóa Đơn</label>
-                    <input type="text" disabled name="Code" value="@sellInvoice.Code">
+                    <input type="text" disabled name="Code" value="@importInvoice.Code">
                 </div>
 
                 <div class="form-group">
-                    <label>Tên Khách Hàng</label>
-                    <input type="text" name="CustomerName" value="@sellInvoice.CustomerName">
+                    <label>Nhà Cung Cấp</label>
+                    <input type="text" name="Supplier" value="@importInvoice.Supplier">
                 </div>
 
                 <div class="form-group">
-                    <label>Địa Chỉ Khách Hàng</label>
-                    <input type="text" name="Address" value="@sellInvoice.Address">
+                    <label>Địa Chỉ Nhà Cung Cấp</label>
+                    <input type="text" name="Address" value="@importInvoice.Address">
                 </div>
 
                 <div class="form-group">
                     <label>Ngày Tạo</label>
-                    <input type="date" name="InvoiceDate" value="@CommonFunction.DateToString(sellInvoice.InvoiceDate, CommonEnum.DateDisplay)">
+                    <input type="date" name="InvoiceDate" value="@CommonFunction.DateToString(importInvoice.InvoiceDate, CommonEnum.DateDisplay)">
                 </div>
 
-                @if (sellInvoice.DetailSellProducts?.Length > 0)
+                @if (importInvoice.DetailImportProducts?.Length > 0)
                 {
                     int i = 0;
-                    foreach (DetailSellProduct detailSellProduct in sellInvoice.DetailSellProducts)
+                    foreach (DetailImportProduct detailImportProduct in importInvoice.DetailImportProducts)
                     {
                         i++;
                         <div class="sub-form" name="Sub">
                             <div class="form-group">
                                 <label>Mã SP @i</label>
-                                <select id="productCode @i" name="ProductCode @i" onchange="select('productName @i', 'productCode @i')">
-                                    @foreach (Product product in products)
-                                    {
-                                        if (@product.Code == detailSellProduct.ProductCode)
-                                        {
-                                            <option value="@product.Code" selected>@product.Name</option>
-                                        }
-                                        else
-                                        {
-                                            <option value="@product.Code">@product.Name</option>
-                                        }
-                                    }
-                                </select>
+                                <input type="text" name="ProductCode @i" value="@detailImportProduct.ProductCode">
                             </div>
                             <div class="form-group">
                                 <label>Tên SP @i</label>
-                                <input type="text" id="productName @i" readonly name="ProductName @i" value="@detailSellProduct.ProductName">
+                                <input type="text" name="ProductName @i" value="@detailImportProduct.ProductName">
                             </div>
                             <div class="form-group">
                                 <label>Số Lượng @i</label>
-                                <input type="number" name="Quantity @i" value="@detailSellProduct.Quantity">
+                                <input type="number" name="Quantity @i" value="@detailImportProduct.Quantity">
                             </div>
                             <div class="form-group">
                                 <label>Giá @i</label>
-                                <input type="number" name="Price @i" value="@detailSellProduct.Price">
+                                <input type="number" name="Price @i" value="@detailImportProduct.Price">
                             </div>
                             <div class="form-group">
-                                <a class="link link-delete" href="SellInvoiceDetail?code=@sellInvoice.Code&action=edit&subAction=@detailSellProduct.ProductCode">-</a>
+                                <a class="link link-delete" href="ImportInvoiceDetail?code=@importInvoice.Code&action=edit&subAction=@detailImportProduct.ProductCode">-</a>
                             </div>
                         </div>
                     }
@@ -307,19 +288,19 @@
 
                 <div class="form-group">
                     <label></label>
-                    <a class="link link-addmore" onclick="sellAdd(event, '@sellInvoice.Code', 'form-edit', 'edit')" href="">+</a>
+                    <a class="link link-addmore" onclick="importAdd(event, '@importInvoice.Code', 'form-edit', 'edit')" href="">+</a>
                 </div>
 
-                <input type="submit" onclick="sellAdd(event, '@sellInvoice.Code', 'form-edit', 'save')">
+                <input type="submit" onclick="importAdd(event, '@importInvoice.Code', 'form-edit', 'save')">
             </form>
         </div>
     }
 
     <!--Detail-->
-    @if (string.IsNullOrWhiteSpace(sellInvoice.Code) == false && action?.ToLower() == CommonEnum.Detail && products.Length > 0)
+    @if (string.IsNullOrWhiteSpace(importInvoice.Code) == false && action?.ToLower() == CommonEnum.Detail)
     {
         decimal totalPrice = 0;
-        DateTime now = sellInvoice.InvoiceDate;
+        DateTime now = importInvoice.InvoiceDate;
         <div class="invoice">
             <div class="store-info">
                 <h1>Tên Cửa Hàng: Min Dress</h1>
@@ -329,9 +310,9 @@
             </div>
 
             <div class="customer-info">
-                <h2>Thông tin khách hàng</h2>
-                <p>Tên khách hàng: @sellInvoice.CustomerName</p>
-                <p>Địa chỉ khách hàng: @sellInvoice.Address</p>
+                <h2>Thông tin nhà cung cấp</h2>
+                <p>Tên nhà cung cấp: @importInvoice.Supplier</p>
+                <p>Địa chỉ nhà cung cấp: @importInvoice.Address</p>
             </div>
 
             <table class="styled-table">
@@ -345,19 +326,19 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if (sellInvoice.DetailSellProducts?.Length > 0)
+                    @if (importInvoice.DetailImportProducts?.Length > 0)
                     {
                         for (int i = 1; i < 11; i++)
                         {
-                            if (i <= sellInvoice.DetailSellProducts.Length)
+                            if (i <= importInvoice.DetailImportProducts.Length)
                             {
-                                decimal total = sellInvoice.DetailSellProducts[i - 1].Quantity * sellInvoice.DetailSellProducts[i - 1].Price;
+                                decimal total = importInvoice.DetailImportProducts[i - 1].Quantity * importInvoice.DetailImportProducts[i - 1].Price;
                                 totalPrice += total;
                                 <tr>
                                     <td>@i</td>
-                                    <td>@sellInvoice.DetailSellProducts[i-1].ProductName</td>
-                                    <td>@CommonFunction.FormatAsVietnameseCurrency(sellInvoice.DetailSellProducts[i-1].Price)</td>
-                                    <td>@CommonFunction.FormatNumber(sellInvoice.DetailSellProducts[i-1].Quantity)</td>
+                                    <td>@importInvoice.DetailImportProducts[i-1].ProductName</td>
+                                    <td>@CommonFunction.FormatAsVietnameseCurrency(importInvoice.DetailImportProducts[i-1].Price)</td>
+                                    <td>@CommonFunction.FormatNumber(importInvoice.DetailImportProducts[i-1].Quantity)</td>
                                     <td>@CommonFunction.FormatAsVietnameseCurrency(total)</td>
                                 </tr>
                             }
@@ -400,12 +381,12 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Tên Khách Hàng</label>
-                    <input type="text" name="CustomerName">
+                  <label>Tên Nhà Cung Cấp</label>
+                    <input type="text" name="Supplier">
                 </div>
 
                 <div class="form-group">
-                    <label>Địa Chỉ Khách Hàng</label>
+                    <label>Địa Chỉ Nhà Cung Cấp</label>
                     <input type="text" name="Address">
                 </div>
 
@@ -416,16 +397,11 @@
                 <div class="sub-form" name="Sub">
                     <div class="form-group">
                         <label>Mã SP</label>
-                        <select id="productCode" name="ProductCode" onchange="select('productName', 'productCode')">
-                            @foreach (Product product in products)
-                            {
-                                <option value="@product.Code">@product.Name</option>
-                            }
-                        </select>
+                        <input type="text" name="ProductCode">
                     </div>
                     <div class="form-group">
                         <label>Tên SP</label>
-                        <input type="text" id="productName" readonly name="ProductName">
+                        <input type="text" name="ProductName">
                     </div>
                     <div class="form-group">
                         <label>Số Lượng</label>
@@ -438,7 +414,7 @@
                 </div>
                 <div class="form-group">
                     <label></label>
-                    <a class="link link-addmore" onclick="sellAdd(event, 'add', 'form-add', 'add')" href="">+</a>
+                    <a class="link link-addmore" onclick="importAdd(event, 'add', 'form-add', 'add')" href="">+</a>
                 </div>
 
                 <input type="submit" value="Lưu">
@@ -447,10 +423,10 @@
     }
 
     <!--Delete-->
-    @if (string.IsNullOrWhiteSpace(sellInvoice.Code) == false && action?.ToLower() == CommonEnum.Delete)
+    @if (string.IsNullOrWhiteSpace(importInvoice.Code) == false && action?.ToLower() == CommonEnum.Delete)
     {
         <div class="form-container">
-            <div>@string.Format(CommonEnum.ConfirmDelete, sellInvoice.Code)</div>
+            <div>@string.Format(CommonEnum.ConfirmDelete, importInvoice.Code)</div>
             <br>
             <form class="form-container" method="post">
                 <input type="submit" value="Xóa">
