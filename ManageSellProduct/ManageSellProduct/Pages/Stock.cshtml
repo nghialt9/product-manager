@@ -1,0 +1,88 @@
+﻿@page
+@using ManageSellProduct.Business
+@using ManageSellProduct.Enum;
+@using ManageSellProduct.Helpers;
+@using ManageSellProduct.Models;
+@{
+    ViewData[CommonEnum.Title] = "Stock page";
+    string code = Request.Query["code"];
+    Stock[] stocks;
+    if (CommonFunction.IsNullOrWhiteSpace(code) == false && code == CommonEnum.Expired)
+    {
+        stocks = StockBusiness.GetStatisticsExpiredUse();
+    }
+    else
+    {
+        stocks = StockBusiness.GetInventoryStatistics();
+    }
+
+    if (Request.Method == CommonEnum.Post)
+    {
+        string key = Request.Form[CommonEnum.Key];
+        if (string.IsNullOrWhiteSpace(key) == false)
+        {
+            key = key.ToLower();
+            Stock[] existStocks = stocks;
+            stocks = new Stock[0];
+
+            for (int i = 0; i < existStocks.Length; i++)
+            {
+                if (existStocks[i].ProductCode.ToLower().Contains(key) ||
+                    existStocks[i].ProductName.ToLower().Contains(key) ||
+                    existStocks[i].Quantity.ToString().Contains(key))
+                {
+                    stocks = CommonFunction.ArrayAddItem(stocks, existStocks[i]);
+                }
+            }
+        }
+    }
+}
+
+<div class="text-center">
+    <div class="form-container">
+        <div class="form-group">
+            <a href="Stock?code=inventory">Sản Phẩm Tồn Kho</a>
+            &emsp;
+            <a href="Stock?code=expired">Sản Phẩm Hết Hạn</a>
+        </div>
+        <form method="post">
+            <div class="form-group">
+                <label>Từ Khóa</label>
+                <input type="text" name="Key" value="">
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Tìm">
+            </div>
+        </form>
+    </div>
+    @if (stocks.Length > 0)
+    {
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Mã SP</th>
+                    <th>Tên SP</th>
+                    <th>Số Lượng</th>
+                    @if (code == CommonEnum.Expired)
+                    {
+                        <th>Ngày Hết Hạn</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Stock stock in stocks)
+                {
+                    <tr>
+                        <td>@stock.ProductCode</td>
+                        <td>@stock.ProductName</td>
+                        <td>@CommonFunction.FormatNumber(stock.Quantity)</td>
+                        @if (code == CommonEnum.Expired)
+                        {
+                            <td>@CommonFunction.DateToString(stock.ExpiryDate, CommonEnum.DateDisplay)</td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

@@ -22,6 +22,8 @@
         public const string Edit = "edit";
         public const string Delete = "delete";
         public const string Detail = "detail";
+        public const string Inventory = "inventory";
+        public const string Expired = "expired";
 
         //Method
         public const string Get = "GET";

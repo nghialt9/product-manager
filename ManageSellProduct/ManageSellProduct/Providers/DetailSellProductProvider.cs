@@ -8,6 +8,25 @@ namespace ManageSellProduct.Providers
     {
         private static string FilePath = @$"{CommonEnum.RootFolder}\DetailSellProduct\DetailSellProduct.txt";
 
+        public static DetailSellProduct[] GetDetailSellProducts()
+        {
+            DetailSellProduct[] detailSellProducts;
+            string[] data = CommonFunction.GetData(FilePath);
+
+            if (data.Length > 0)
+            {
+                detailSellProducts = new DetailSellProduct[data.Length];
+                for (int i = 0; i < data.Length; i++)
+                {
+                    detailSellProducts[i] = StringToDetailSellProduct(data[i]);
+                }
+
+                return detailSellProducts;
+            }
+
+            return new DetailSellProduct[] { };
+        }
+
         public static DetailSellProduct[] GetDetailSellProducts(string sellInvoiceCode)
         {
             DetailSellProduct[] detailSellProducts;
