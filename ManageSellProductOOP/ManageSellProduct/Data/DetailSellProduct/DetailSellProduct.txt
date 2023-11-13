@@ -1,0 +1,9 @@
+SellInvoice001|Bánh Bao|BanhBao001|5|11100
+SellInvoice001|Bánh Lá|BanhLa001|6|12200
+SellInvoice001|Kẹo Dừa|KeoDeo001|11|13300
+SellInvoice002|Bánh Lá|BanhLa001|1|1
+SellInvoice002|Kẹo Dừa|KeoDeo001|1|1
+SellInvoice002|Bánh Bao|BanhBao001|1|2000000
+SellInvoice003|Bánh Bao|BanhBao001|111|33000
+SellInvoice003|Kẹo Dừa|KeoDeo001|1|1
+SellInvoice003|Bánh Lá|BanhLa001|1|1

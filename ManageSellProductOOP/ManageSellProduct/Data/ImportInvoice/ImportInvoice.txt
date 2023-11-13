@@ -1,0 +1,2 @@
+ImportInvoice001|20231105|Big C|195 Điện Biên Phủ, P.15, Bình Thạnh|58031000
+ImportInvoice002|20231107|Big C|195 Điện Biên Phủ, P.15, Bình Thạnh|15321000
